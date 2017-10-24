@@ -1,21 +1,36 @@
 // vue vm
-var prediction = require("./graph");
+var graph = require("./graph");
 var moment = require("moment");
 moment.locale('ja');
 
+var socket = require('socket.io-client')('/', {});
+
+socket.on('connect', function() {
+  console.log("connected socket.io");
+});
+
+var router = new VueRouter({
+  mode: 'history',
+  routes: []
+});
+
 new Vue({
+  router: router,
   el: '#app',
-  data: {
-    baseUrl: "http://winmuse.cloudapp.net/damapp/",
-    projectID: 100,
-    stationID: 94,
-    delay: 20,
-    dispOffset: 0,
-    predictions: [],
-    predictionsHistory: [],
-    offsetSeconds: 70,
-    selectedPrediction: null,
-    targetDate: moment(),
+  data: function(){
+    return {
+      baseUrl: "http://winmuse.cloudapp.net/damapp/",
+      projectID: 100,
+      stationID: 94,
+      delay: 20,
+      dispOffset: 0,
+      predictions: [],
+      predictionsHistory: [],
+      offsetSeconds: 70,
+      selectedPrediction: null,
+      targetDate: moment(),
+      socket: socket,
+    }
   },
 
   computed: {
@@ -40,14 +55,11 @@ new Vue({
         return i >= 6;
       });
     }
-
-
   },
 
   mounted: function(){
     var self = this;
 
-    this.predictionsHistory = this.getHistoryFromLocalstorage();
     setInterval(function(){
       self.targetDate = moment();
     }, 1000);
@@ -80,21 +92,6 @@ new Vue({
     },
 
     addHistory: function(history){
-      var targetHistory = this.getSamePrediction(this.predictionsHistory, history);
-      if (targetHistory == null){
-        this.predictionsHistory.unshift(history);
-        this.predictionsHistory.sort(function(a,b){
-          return a.baseUrl - b.baseUrl ||
-                 Number(a.projectID) - Number(b.projectID) ||
-                 Number(a.stationID) - Number(b.stationID) ||
-                 Number(a.delay) - Number(b.delay) ||
-                 Number(a.dispOffset) - Number(b.dispOffset);
-        });
-        this.setHistoryToLocalStorage(this.predictionsHistory);
-        return history;
-      }else{
-        return targetHistory;
-      }
     },
 
     getSamePrediction: function(list, target){
@@ -123,27 +120,6 @@ new Vue({
       this.predictionsHistory.splice(index,1);
 
       this.deletePrediction(history);
-      this.setHistoryToLocalStorage(this.predictionsHistory);
-    },
-
-    getHistoryFromLocalstorage: function(){
-      try{
-        if (localStorage && localStorage.history){
-          return JSON.parse(localStorage.history);
-        }
-        return [];
-      }catch (err){
-        return [];
-      }
-    },
-
-    setHistoryToLocalStorage: function(history){
-      try{
-        if (localStorage){
-          localStorage.history = JSON.stringify(history);
-        }
-      }catch (err){
-      }
     },
 
     isSelected: function(history){

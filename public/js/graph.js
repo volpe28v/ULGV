@@ -2,7 +2,7 @@ var axios = require("axios");
 var moment = require("moment");
 moment.locale('ja');
 
-var predictionComponent = Vue.component('prediction',{
+var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
       <div class="title-area"><span v-bind:class="{ success: !isError, error: isError }">{{waterLevelResultLatestDispDate}}</span> - {{baseUrlAlias}} P:{{prediction.projectID}} S:{{prediction.stationID}} D:{{prediction.delay}} O:{{prediction.dispOffset}} Now: {{nowWaterLevel}} Max: {{maxWatarLevel}}</div>\
@@ -115,6 +115,9 @@ var predictionComponent = Vue.component('prediction',{
         self.localDate = adjustedDate;
         console.log(adjustedDate.format('YYYY:MM:DD HH:mm:ss'));
 
+        resolve(true);
+
+        /*
         var param = {
           baseUrl: self.prediction.baseUrl,
           projectID: self.prediction.projectID,
@@ -229,6 +232,7 @@ var predictionComponent = Vue.component('prediction',{
 
             resolve(true);
           }));
+        */
       });
     },
 
@@ -628,4 +632,4 @@ var predictionComponent = Vue.component('prediction',{
   }
 });
 
-module.exports = predictionComponent;
+module.exports = graphComponent;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PredictionViewer</title>
+    <title>ULGV</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -10,38 +10,7 @@
   <body>
     <div id="app">
       <div class="leftpane">
-        <div class="left-header">
-          <span v-html="targetDispDate"></span>
-          <div>
-            reload offset
-            <input style="width: 30px; text-align: right;" v-model="offsetSeconds">sec
-          </div>
-        </div>
-
         <div class="left-body">
-          <div class="add-form">
-            <input style="width: 210px" v-model="baseUrl">
-            <table>
-              <tr>
-                <td>projectID</td>
-                <td><input style="width: 30px; text-align: right;"  v-model="projectID"></td>
-              </tr>
-              <tr>
-                <td>stationID</td>
-                <td><input style="width: 30px; text-align: right;"  v-model="stationID"></td>
-              </tr>
-              <tr>
-                <td>delay</td>
-                <td><input style="width: 30px; text-align: right;"  v-model="delay">min</td>
-              </tr>
-              <tr>
-                <td>offset</td>
-                <td><input style="width: 30px; text-align: right;"  v-model="dispOffset">min</td>
-              </tr>
-            </table>
-            <button style="width: 100%" v-on:click="addPrediction">Add</button>
-          </div>
-
           <ul class="history">
             <li v-for="history in predictionsHistory" v-bind:class="{ 'selected-history': isSelected(history)}" v-on:click="selectHistory(history)" v-on:dblclick="deletePrediction(history)">
               <div>{{history.baseUrl}}</div>
@@ -57,35 +26,35 @@
       </div>
 
       <div class="rightpane">
-        <prediction class="prediction"
+        <graph class="prediction"
                     v-for="(prediction, index) in firstPredictions"
                     :key="index"
                     :prediction="prediction"
                     :target_date="adjustedDate"
                     v-on:delete-prediction="deletePrediction"
                     >
-        </prediction>
+        </graph>
       </div>
 
       <div class="rightpane2" v-if="predictions.length > 3">
-        <prediction class="prediction"
+        <graph class="prediction"
                     v-for="(prediction, index) in secondPredictions"
                     :key="index"
                     :prediction="prediction"
                     :target_date="adjustedDate"
                     v-on:delete-prediction="deletePrediction"
                     >
-        </prediction>
+        </graph>
       </div>
       <div class="rightpane3" v-if="predictions.length > 6">
-        <prediction class="prediction"
+        <graph class="prediction"
                     v-for="(prediction, index) in thirdPredictions"
                     :key="index"
                     :prediction="prediction"
                     :target_date="adjustedDate"
                     v-on:delete-prediction="deletePrediction"
                     >
-        </prediction>
+        </graph>
       </div>
  
     </div>
@@ -94,6 +63,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
     <script type="text/javascript" src="dist/bundle.js">
     </script>
   </body>

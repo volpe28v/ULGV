@@ -63,6 +63,9 @@ new Vue({
     setInterval(function(){
       self.targetDate = moment();
     }, 1000);
+
+
+    this.addPrediction();
   },
 
   methods: {
@@ -92,6 +95,20 @@ new Vue({
     },
 
     addHistory: function(history){
+      var targetHistory = this.getSamePrediction(this.predictionsHistory, history);
+      if (targetHistory == null){
+        this.predictionsHistory.unshift(history);
+        this.predictionsHistory.sort(function(a,b){
+          return a.baseUrl - b.baseUrl ||
+            Number(a.projectID) - Number(b.projectID) ||
+            Number(a.stationID) - Number(b.stationID) ||
+            Number(a.delay) - Number(b.delay) ||
+            Number(a.dispOffset) - Number(b.dispOffset);
+        });
+        return history;
+      }else{
+        return targetHistory;
+      }
     },
 
     getSamePrediction: function(list, target){

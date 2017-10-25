@@ -5,7 +5,7 @@ moment.locale('ja');
 var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
-      <div class="title-area"><span v-bind:class="{ success: !isError, error: isError }">{{waterLevelResultLatestDispDate}}</span> - {{baseUrlAlias}} P:{{prediction.projectID}} S:{{prediction.stationID}} D:{{prediction.delay}} O:{{prediction.dispOffset}} Now: {{nowWaterLevel}} Max: {{maxWatarLevel}}</div>\
+      <div class="title-area"></div>\
       <div class="delete-button" v-on:click="deletePrediction">x</div>\
     </div>\
     <div class="svg-area">\
@@ -13,32 +13,23 @@ var graphComponent = Vue.component('graph',{
     </div>\
   </div>',
 
-  props: ['prediction', 'target_date'],
+  props: ['prediction'],
 
   data: function(){
     return {
-      waterLevelResult: null,
-      waterLevelPlan: null,
-      rainFallResult: null,
-      rainFallForecast: null,
+      predictionResult: null,
       chartSetting: null,
-      alarmInfo: null,
       svgWidth: 0,
       svgHeight: 0,
-      localDate: moment() ,
-      waterLevelResultLatestDate: moment(),
-      isError: false,
-      id: new Date().getTime().toString(16)  + Math.floor(Math.random()).toString(16),
       xMinMax: null,
     }
   },
 
   computed: {
     baseUrlAlias: function(){
+      console.log("baseUrlAlias");
+      console.log(this.prediction);
       return this.prediction.baseUrl.match(/\/([^\/]+)\/$/)[0].replace(/\//g,'');
-    },
-    waterLevelResultLatestDispDate: function(){
-      return this.waterLevelResultLatestDate.format('YYYY/MM:DD HH:mm');
     },
     nowWaterLevel: function(){
       if (this.waterLevelResult != null){
@@ -49,8 +40,8 @@ var graphComponent = Vue.component('graph',{
       }
     },
     maxWatarLevel: function(){
-      if (this.waterLevelPlan != null){
-        var maxValue = Math.max.apply(null,this.waterLevelPlan.map(function(p){ return p.value;}));
+      if (this.predictionResult != null){
+        var maxValue = Math.max.apply(null,this.predictionResult.map(function(p){ return p.value;}));
         return Math.floor(maxValue * 100) / 100; 
       }else{
         return '';
@@ -59,9 +50,6 @@ var graphComponent = Vue.component('graph',{
   },
 
   watch: {
-    target_date: function(){
-      this.update();
-    }
   },
 
   mounted: function(){
@@ -71,8 +59,7 @@ var graphComponent = Vue.component('graph',{
   updated: function(){
     if (this.prediction.projectID != this.chartSetting.ProjectID){
       // 削除後にProjectID がずれたら読み直す
-      this.localDate = moment();
-      this.update();
+      //this.update();
     }
   },
 
@@ -80,166 +67,46 @@ var graphComponent = Vue.component('graph',{
     update: function(){
       var self = this;
 
-      this.updateData()
-        .then(
-          function(success){
-            if (success){
-              var forceUpdate = true;
-              self.updateGraph(forceUpdate);
-            }
-            self.isError = !success;
-          },
-          function(){
-            var forceUpdate = false;
-            self.updateGraph(forceUpdate);
-          }
-        );
+      this.updateData();
+
+      var forceUpdate = true;
+      self.updateGraph(forceUpdate);
     },
 
     updateData: function(){
       var self = this;
 
-      return new Promise(function(resolve, reject){
-        // 遅延を反映し10分単位に変換
-        var adjustedDate = moment(self.target_date)
-          .add(self.prediction.delay * -1, 'minute')
-          .add((self.target_date.minute() % 10) * -1, 'minute')
-          .millisecond(0)
-          .second(0);
-
-        if (adjustedDate.isSame(self.localDate)){
-          // 更新済みの場合はデータを取得しない
-          reject(); return;
-        }
-
-        self.localDate = adjustedDate;
-        console.log(adjustedDate.format('YYYY:MM:DD HH:mm:ss'));
-
-        resolve(true);
-
-        /*
-        var param = {
-          baseUrl: self.prediction.baseUrl,
-          projectID: self.prediction.projectID,
-          stationID: self.prediction.stationID,
-          year: adjustedDate.year(),
-          month: adjustedDate.month() + 1,
-          day: adjustedDate.date(),
-          hour: adjustedDate.hour(),
-          minute: parseInt(adjustedDate.minute() / 10) * 10
+      // 水位予測
+      self.predictionResult = [
+        { m: moment("2013-02-08 01:00"), v: 100 },
+        { m: moment("2013-02-08 02:00"), v: 110 },
+        { m: moment("2013-02-08 03:00"), v: 120 },
+        { m: moment("2013-02-08 04:00"), v: 130 },
+        { m: moment("2013-02-08 05:00"), v: 120 },
+        { m: moment("2013-02-08 06:00"), v: 110 },
+        { m: moment("2013-02-08 07:00"), v: 100 },
+      ].map(function(d){
+        return {
+          moment: d.m,
+          date: d.m.toDate(),
+          value: d.v
         };
-
-        function getWaterLevelResult(){
-          var url = "PostWaterLevelResultChartDataSelectDateForDateNum";
-          return axios.post(url, param);
-        }
-
-        function getWaterLevelPlan(){
-          var url = "PostWaterLevelPlanChartDataSelectDateForDateNum";
-          return axios.post(url, param);
-        }
-
-        function getRainFallResult(){
-          var url = "PostRainfallResultChartDataSelectDateForDateNum";
-          return axios.post(url, param);
-        }
-
-        function getRainFallForecast(){
-          var url = "PostRainfallForecastChartDataSelectDateForDateNum";
-          return axios.post(url, param);
-        }
-
-        function getChartSetting(){
-          var url = "postChartSetting";
-          return axios.post(url, param);
-        }
-
-        function getAlarmInfo(){
-          var url = "postAlarmInfo";
-          return axios.post(url, param);
-        }
-
-
-        axios.all([
-          getWaterLevelResult(),
-          getWaterLevelPlan(),
-          getRainFallResult(),
-          getRainFallForecast(),
-          getChartSetting(),
-          getAlarmInfo()
-        ])
-          .then(axios.spread(function (wlr, wlp, rfr, rff, chs, alm) {
-            console.log(wlr);
-            console.log(wlp);
-            console.log(rfr);
-            console.log(rff);
-            console.log(chs);
-            console.log(alm);
-
-            if (wlr.data.ChartDates.length == 0 || wlp.data.ChartDates.length == 0 || chs.data.length == 0){
-              // データが不完全
-              resolve(false); return;
-            }
-
-            self.waterLevelResultLatestDate = moment(wlr.data.ChartDates[wlr.data.ChartDates.length-1]);
-
-            // 水位実績
-            self.waterLevelResult = wlr.data.ChartDates.map(function(d,i){
-              return {
-                moment: moment(d),
-                date: moment(d).toDate(),
-                value: wlr.data.WaterLevels[i]
-              };
-            });
-            // 水位予測
-            self.waterLevelPlan = wlp.data.ChartDates.map(function(d,i){
-              return {
-                moment: moment(d),
-                date: moment(d).toDate(),
-                value: wlp.data.WaterLevels[i]
-              };
-            });
-            // 雨量実績
-            self.rainFallResult = rfr.data.ChartDates.map(function(d,i){
-              return {
-                moment: moment(d),
-                date: moment(d).toDate(),
-                value: rfr.data.WaterLevels[i]
-              };
-            });
-            // 雨量予報
-            self.rainFallForecast = rff.data.ChartDates.map(function(d,i){
-              return {
-                moment: moment(d),
-                date: moment(d).toDate(),
-                value: rff.data.WaterLevels[i]
-              };
-            });
-
-
-            self.xMinMax = [
-              self.waterLevelResult[0].moment.add(self.prediction.dispOffset,'m').toDate(),
-              self.waterLevelPlan[self.waterLevelPlan.length-1].moment.add(self.prediction.dispOffset,'m').toDate()
-            ];
-
-            if (chs.data.length > 0){
-              self.chartSetting = chs.data[0];
-            }
-
-            if (alm.data.length > 0){
-              self.alarmInfo = alm.data;
-            }
-
-            resolve(true);
-          }));
-        */
       });
+
+      self.xMinMax = [
+        self.predictionResult[0].moment.toDate(),
+        self.predictionResult[self.predictionResult.length-1].moment.toDate()
+      ];
+
+      self.chartSetting = {
+        ProjectID: 1,
+        YMinValue: 0,
+        YMaxValue: 200,
+      };
     },
 
     updateGraph: function(forceUpdate){
       var self = this;
-
-      if (self.waterLevelResult == null){ return; }
 
       // サイズが変わっていたら再描画
       var svg = d3.select(self.$el).select("svg");
@@ -285,9 +152,6 @@ var graphComponent = Vue.component('graph',{
       // 水位グラフ
       self.drawWaterLevelGraph(g, x, width, height, mouseHandlers);
 
-      // 雨量グラフ
-      self.drawRainFallGraph(g, x, width, height, mouseHandlers);
-
       // フォーカス
       self.drawFocuses(g, width, height, mouseHandlers);
     },
@@ -295,12 +159,9 @@ var graphComponent = Vue.component('graph',{
     drawWaterLevelGraph: function(g, x, width, height, mouseHandlers){
       var self = this;
 
-      var adjustedResult = self.waterLevelResult.filter(function(wr){ return self.xMinMax[0] <= wr.date; });
-      var adjustedPlan = [self.waterLevelResult[self.waterLevelResult.length-1]].concat(self.waterLevelPlan)
-                           .filter(function(wp){ return self.xMinMax[0] <= wp.date; });
+      var adjustedPlan = self.predictionResult;
 
       var water_lines = [
-        { id: "water-result", color: "deepskyblue", values: adjustedResult },
         { id: "water-plan"  , color: "lime" , values: adjustedPlan },
       ];
 
@@ -321,10 +182,6 @@ var graphComponent = Vue.component('graph',{
         .attr("dy", "0.71em")
         .attr("text-anchor", "end");
 
-      // 警報線
-      self.drawAlarmInfoGraph(g, x, y, width, height);
-
-
       var water_line = g.selectAll(".water-line")
         .data(water_lines)
         .enter().append("g")
@@ -339,119 +196,7 @@ var graphComponent = Vue.component('graph',{
         .attr("d", function(d){ return line(d.values);});
 
       // カーソル
-      self.drawWaterLevelFocus(g, x, y, width, height, adjustedResult.concat(adjustedPlan), mouseHandlers);
-    },
-
-    drawAlarmInfoGraph: function(g, x, y, width, height){
-      var self = this;
-
-      if (self.alarmInfo == null || self.alarmInfo.length == 0){ return; }
-
-      var alerm_lines = self.alarmInfo.map(function(a){
-        return {
-          color: a.ColorName,
-          values: [
-            { x: 0, value: a.Value },
-            { x: width, value: a.Value }
-          ]
-        }
-      });
-
-      var line = d3.line()
-        .x(function(d) { return d.x; })
-        .y(function(d) { return y(d.value); });
-
-      var alerm_line = g.selectAll(".alerm-line")
-        .data(alerm_lines)
-        .enter().append("g")
-        .attr("class", "alerm-line");
-
-      alerm_line.append("path")
-        .attr("fill", "none")
-        .attr("stroke", function(d){ return d.color;})
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-width", 0.5)
-        .attr("d", function(d){ return line(d.values);});
-    },
-
-
-    drawRainFallGraph: function(g, x, width, height, mouseHandlers){
-      var self = this;
-
-      if (!self.chartSetting.RainEnabled) { return;}
-
-      var adjustedRainResult = self.rainFallResult.filter(function(rfr){ return self.xMinMax[0] <= rfr.date; });
-      var adjustedRainForecast = self.rainFallForecast.filter(function(rff){ return self.xMinMax[0] <= rff.date; });
-
-      var y2 = d3.scaleLinear().rangeRound([height, 0]);
-      var barWidth = parseInt(width / (moment(self.xMinMax[1]).diff(moment(self.xMinMax[0]),'minutes') / 10));
-      y2.domain([self.chartSetting.RainYMaxValue, 0]);
-      g.append("g")
-        .call(d3.axisRight(y2))
-        .attr("transform", "translate(" + width + ",0)")
-        .append("text")
-        .attr("fill", "#000")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end");
-
-
-      if (adjustedRainResult.length > 0){
-        var rain_result_bar = g.selectAll(".rain-result-bar")
-          .data(adjustedRainResult)
-          .enter().append("rect")
-          .attr("class", "rain-result-bar")
-          .attr("fill", "blue")
-          .attr("x", function(d,i) {
-            if (i == 0){
-              return x(d.date) - (x(d.date) - 0);
-            }else{
-              return x(d.date) - (x(d.date) - x(adjustedRainResult[i-1].date));
-            }
-          })
-          .attr("y", function(d) { return 0; })
-          .attr("width", function(d,i){
-            if (i == 0){
-              return (x(d.date) - 0);
-            }else{
-              return (x(d.date) - x(adjustedRainResult[i-1].date));
-            }
-          })
-          .attr("height", function(d) { return y2(d.value); });
-      }
-
-      if (adjustedRainForecast.length > 0){
-        var xOffset = 0;
-        if (adjustedRainResult.length > 0){
-          xOffset = x(adjustedRainResult[adjustedRainResult.length-1].date);
-        }
-
-        var rain_forecast_bar = g.selectAll(".rain-forecast-bar")
-          .data(adjustedRainForecast)
-          .enter().append("rect")
-          .attr("class", "rain-forecast-bar")
-          .attr("fill", "skyblue")
-          .attr("x", function(d,i) {
-            if (i == 0){
-              return x(d.date) - (x(d.date) - xOffset);
-            }else{
-              return x(d.date) - (x(d.date) - x(adjustedRainForecast[i-1].date));
-            }
-          })
-          .attr("y", function(d) { return 0; })
-          .attr("width", function(d,i) {
-            if (i == 0){
-              return (x(d.date) - xOffset);
-            }else{
-              return (x(d.date) - x(adjustedRainForecast[i-1].date));
-            }
-          })
-          .attr("height", function(d) { return y2(d.value); });
-      }
-
-      // カーソル
-      self.drawRainFallFocus(g, x, y2, width, height, adjustedRainResult.concat(adjustedRainForecast), mouseHandlers);
+      self.drawWaterLevelFocus(g, x, y, width, height, adjustedPlan, mouseHandlers);
     },
 
     drawFocuses: function(g, width, height, mouseHandlers){
@@ -574,56 +319,6 @@ var graphComponent = Vue.component('graph',{
         }
       );
 		},
-
-		drawRainFallFocus: function(g, x, y, width, height, data, mouseHandlers){
-      var self = this;
-      var bisectDate = d3.bisector(function(d){ return d.date; }).left;
-
-      var focus = self.createFocus(g);
-
-      mouseHandlers.over.push(
-				function(context){ focus.style('display', null);}
-      );
-
-      mouseHandlers.out.push(
-				function(context){ focus.style('display', 'none');}
-      );
-
-      mouseHandlers.move.push(
-        function(context) {
-          var x0 = x.invert(d3.mouse(context)[0]);
-          var i = bisectDate(data, x0, 1);
-          if (data.length <= i) {
-            i = data.length - 1;
-          }
-
-          var d0 = data[i - 1];
-          var d1 = data[i];
-          var d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-          focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d.value) + ')');
-          focus.select('line.x')
-            .attr('x1', 0)
-            .attr('x2', width - x(d.date))
-            .attr('y1', 0)
-            .attr('y2', 0);
-
-          focus.select('line.y')
-            .attr('x1', 0)
-            .attr('x2', 0)
-            .attr('y1', 0)
-            .attr('y2', height - y(d.value));
-
-          // テキスト生成
-          var xOffset = x(x0) < width / 2 ? 9 : -140;
-          var focus_text = d.moment.format('DD日 HH:mm') + " " + d3.format(',.2f')(d.value);
-          focus.select('text')
-            .text(focus_text)
-				    .attr('x', xOffset)
-				    .attr('y', 14);
-        }
-      );
-    },
-
 
     deletePrediction: function(){
       this.$emit('delete-prediction', this.prediction);

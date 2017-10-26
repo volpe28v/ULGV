@@ -19,27 +19,15 @@ new Vue({
   el: '#app',
   data: function(){
     return {
-      baseUrl: "http://winmuse.cloudapp.net/damapp/",
       projectID: 100,
-      stationID: 94,
-      delay: 20,
-      dispOffset: 0,
       predictions: [],
       predictionsHistory: [],
-      offsetSeconds: 70,
       selectedPrediction: null,
-      targetDate: moment(),
       socket: socket,
     }
   },
 
   computed: {
-    targetDispDate: function(){
-      return this.targetDate.format('YYYY:MM:DD HH:mm:ss');
-    },
-    adjustedDate: function(){
-      return this.targetDate.add(this.offsetSeconds * -1, 'second');
-    },
     firstPredictions: function(){
       return this.predictions.filter(function(p,i){
         return i < 3;
@@ -60,22 +48,13 @@ new Vue({
   mounted: function(){
     var self = this;
 
-    setInterval(function(){
-      self.targetDate = moment();
-    }, 1000);
-
-
     this.addPrediction();
   },
 
   methods: {
     addPrediction: function(){
       var prediction = {
-        baseUrl: this.baseUrl,
         projectID: this.projectID,
-        stationID: this.stationID,
-        delay: this.delay,
-        dispOffset: this.dispOffset,
       };
 
       var addedPrediction = this.addHistory(prediction);
@@ -98,13 +77,6 @@ new Vue({
       var targetHistory = this.getSamePrediction(this.predictionsHistory, history);
       if (targetHistory == null){
         this.predictionsHistory.unshift(history);
-        this.predictionsHistory.sort(function(a,b){
-          return a.baseUrl - b.baseUrl ||
-            Number(a.projectID) - Number(b.projectID) ||
-            Number(a.stationID) - Number(b.stationID) ||
-            Number(a.delay) - Number(b.delay) ||
-            Number(a.dispOffset) - Number(b.dispOffset);
-        });
         return history;
       }else{
         return targetHistory;
@@ -113,11 +85,7 @@ new Vue({
 
     getSamePrediction: function(list, target){
       return list.filter(function(p){
-        return p.baseUrl == target.baseUrl &&
-               p.projectID == target.projectID &&
-               p.stationID == target.stationID &&
-               p.delay == target.delay &&
-               p.dispOffset == target.dispOffset;
+        return p.projectID == target.projectID
       })[0];
     },
 
@@ -126,10 +94,6 @@ new Vue({
       this.addPredictionList(history);
 
       this.projectID = history.projectID;
-      this.baseUrl = history.baseUrl;
-      this.stationID = history.stationID;
-      this.delay = history.delay;
-      this.dispOffset = history.dispOffset;
     },
 
     deleteHistory: function(history){

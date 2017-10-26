@@ -26,27 +26,6 @@ var graphComponent = Vue.component('graph',{
   },
 
   computed: {
-    baseUrlAlias: function(){
-      console.log("baseUrlAlias");
-      console.log(this.prediction);
-      return this.prediction.baseUrl.match(/\/([^\/]+)\/$/)[0].replace(/\//g,'');
-    },
-    nowWaterLevel: function(){
-      if (this.waterLevelResult != null){
-        var nowValue = this.waterLevelResult[this.waterLevelResult.length-1].value;
-        return Math.floor(nowValue * 100) / 100; 
-      }else{
-        return '';
-      }
-    },
-    maxWatarLevel: function(){
-      if (this.predictionResult != null){
-        var maxValue = Math.max.apply(null,this.predictionResult.map(function(p){ return p.value;}));
-        return Math.floor(maxValue * 100) / 100; 
-      }else{
-        return '';
-      }
-    }
   },
 
   watch: {

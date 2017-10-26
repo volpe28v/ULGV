@@ -16,7 +16,7 @@
               <div>{{history.baseUrl}}</div>
               <div class="history-body">
                 <div>
-                  P:{{history.projectID}} S:{{history.stationID}} D:{{history.delay}} O:{{history.dispOffset}}
+                  P:{{history.projectID}}
                 </div>
                 <div class="history-delete" v-on:click.stop="deleteHistory(history)">X</div>
               </div>
@@ -30,7 +30,6 @@
                     v-for="(prediction, index) in firstPredictions"
                     :key="index"
                     :prediction="prediction"
-                    :target_date="adjustedDate"
                     v-on:delete-prediction="deletePrediction"
                     >
         </graph>
@@ -41,7 +40,6 @@
                     v-for="(prediction, index) in secondPredictions"
                     :key="index"
                     :prediction="prediction"
-                    :target_date="adjustedDate"
                     v-on:delete-prediction="deletePrediction"
                     >
         </graph>
@@ -51,7 +49,6 @@
                     v-for="(prediction, index) in thirdPredictions"
                     :key="index"
                     :prediction="prediction"
-                    :target_date="adjustedDate"
                     v-on:delete-prediction="deletePrediction"
                     >
         </graph>

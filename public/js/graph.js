@@ -13,7 +13,7 @@ var graphComponent = Vue.component('graph',{
     </div>\
   </div>',
 
-  props: ['prediction'],
+  props: ['prediction','data'],
 
   data: function(){
     return {
@@ -29,6 +29,9 @@ var graphComponent = Vue.component('graph',{
   },
 
   watch: {
+    data: function(){
+      this.update();
+    }
   },
 
   mounted: function(){
@@ -36,7 +39,7 @@ var graphComponent = Vue.component('graph',{
   },
 
   updated: function(){
-    if (this.prediction.projectID != this.chartSetting.ProjectID){
+    if (this.prediction.id != this.chartSetting.ProjectID){
       // 削除後にProjectID がずれたら読み直す
       //this.update();
     }
@@ -56,6 +59,17 @@ var graphComponent = Vue.component('graph',{
       var self = this;
 
       // 水位予測
+      self.predictionResult = self.data
+      .map(function(d){
+        return {
+          moment: d.m,
+          date: d.m.toDate(),
+          value: d.v
+        };
+      });
+
+
+      /*
       self.predictionResult = [
         { m: moment("2013-02-08 01:00"), v: 100 },
         { m: moment("2013-02-08 02:00"), v: 110 },
@@ -71,6 +85,7 @@ var graphComponent = Vue.component('graph',{
           value: d.v
         };
       });
+      */
 
       self.xMinMax = [
         self.predictionResult[0].moment.toDate(),

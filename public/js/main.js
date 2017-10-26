@@ -19,9 +19,7 @@ new Vue({
   el: '#app',
   data: function(){
     return {
-      projectID: 100,
       predictions: [],
-      predictionsHistory: [],
       selectedPrediction: null,
       socket: socket,
     }
@@ -49,16 +47,49 @@ new Vue({
     var self = this;
 
     this.addPrediction();
+
+    setInterval(function(){
+      var data = self.predictions[0].data;
+
+      self.predictions[0].data = 
+        data.map(function(d){
+          d.v = d.v + 1;
+          return d;
+        });
+    }, 1000);
   },
 
   methods: {
     addPrediction: function(){
       var prediction = {
-        projectID: this.projectID,
+        id: 1,
+        data: [
+          { m: moment("2013-02-08 01:00"), v: 100 },
+          { m: moment("2013-02-08 02:00"), v: 110 },
+          { m: moment("2013-02-08 03:00"), v: 120 },
+          { m: moment("2013-02-08 04:00"), v: 130 },
+          { m: moment("2013-02-08 05:00"), v: 120 },
+          { m: moment("2013-02-08 06:00"), v: 110 },
+          { m: moment("2013-02-08 07:00"), v: 100 },
+        ]
       };
 
-      var addedPrediction = this.addHistory(prediction);
-      this.addPredictionList(addedPrediction);
+      this.addPredictionList(prediction);
+
+      var prediction2= {
+        id: 2,
+        data: [
+          { m: moment("2013-03-04 01:00"), v: 10 },
+          { m: moment("2013-03-04 02:00"), v: 10 },
+          { m: moment("2013-03-04 03:00"), v: 20 },
+          { m: moment("2013-03-04 04:00"), v: 30 },
+          { m: moment("2013-03-04 05:00"), v: 20 },
+          { m: moment("2013-03-04 06:00"), v: 10 },
+          { m: moment("2013-03-04 07:00"), v: 10 },
+        ]
+      };
+
+      this.addPredictionList(prediction2);
     },
 
     addPredictionList: function(prediction){
@@ -73,34 +104,15 @@ new Vue({
       this.predictions.splice(index,1);
     },
 
-    addHistory: function(history){
-      var targetHistory = this.getSamePrediction(this.predictionsHistory, history);
-      if (targetHistory == null){
-        this.predictionsHistory.unshift(history);
-        return history;
-      }else{
-        return targetHistory;
-      }
-    },
-
     getSamePrediction: function(list, target){
       return list.filter(function(p){
-        return p.projectID == target.projectID
+        return p.id == target.id
       })[0];
     },
 
     selectHistory: function(history){
       this.selectedPrediction = history;
       this.addPredictionList(history);
-
-      this.projectID = history.projectID;
-    },
-
-    deleteHistory: function(history){
-      var index = this.predictionsHistory.indexOf(history);
-      this.predictionsHistory.splice(index,1);
-
-      this.deletePrediction(history);
     },
 
     isSelected: function(history){

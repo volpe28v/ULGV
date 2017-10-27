@@ -20,6 +20,16 @@ program
 
 app.set('port', program.port || process.env.PORT || 3000);
 
+app.post('/prediction', function(req, res){
+  var data = req.body;
+
+  console.log(data);
+
+  io.sockets.emit('prediction', data);
+
+  res.json({});
+});
+
 server.listen(app.get('port'), function () {
   console.log('ULGV listening on port ' + app.get('port'));
 });

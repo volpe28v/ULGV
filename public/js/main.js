@@ -65,6 +65,14 @@ new Vue({
   },
 
   methods: {
+    firstDate: function(prediction){
+      return prediction.data[0].m.format("YYYY/MM/DD hh:mm");
+    },
+
+    dataCount: function(prediction){
+      return prediction.data.length;
+    },
+    
     addPredictionList: function(prediction){
       this.predictions.push(prediction);
     },

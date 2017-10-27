@@ -15,7 +15,7 @@
             <li v-for="prediction in predictions" v-bind:class="{ 'selected-history': isSelected(prediction)}" v-on:click="selectHistory(prediction)" v-on:dblclick="deletePrediction(prediction)">
               <div class="history-body">
                 <div>
-                  ID:{{prediction.id}}
+                  ID:{{prediction.id}} {{firstDate(prediction)}} - {{dataCount(prediction)}}
                 </div>
                 <div class="history-delete" v-on:click.stop="deleteHistory(prediction)">X</div>
               </div>

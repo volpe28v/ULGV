@@ -46,56 +46,27 @@ new Vue({
   mounted: function(){
     var self = this;
 
-    this.addPrediction();
+    self.socket.on("prediction", function(prediction){
+      if (prediction == null) return;
+      console.log(prediction);
 
-    setInterval(function(){
-      var data = self.predictions[0].data;
+      prediction.data = prediction.data.map(function(d){
+        d.m = moment(d.m);
+        return d;
+      });
 
-      self.predictions[0].data = 
-        data.map(function(d){
-          d.v = d.v + 1;
-          return d;
-        });
-    }, 1000);
+      var target = self.predictions.filter(function(p){ return p.id == prediction.id; })[0];
+      if (target){
+        target.data = prediction.data;
+      }else{
+        self.addPredictionList(prediction);
+      }
+    });
   },
 
   methods: {
-    addPrediction: function(){
-      var prediction = {
-        id: 1,
-        data: [
-          { m: moment("2013-02-08 01:00"), v: 100 },
-          { m: moment("2013-02-08 02:00"), v: 110 },
-          { m: moment("2013-02-08 03:00"), v: 120 },
-          { m: moment("2013-02-08 04:00"), v: 130 },
-          { m: moment("2013-02-08 05:00"), v: 120 },
-          { m: moment("2013-02-08 06:00"), v: 110 },
-          { m: moment("2013-02-08 07:00"), v: 100 },
-        ]
-      };
-
-      this.addPredictionList(prediction);
-
-      var prediction2= {
-        id: 2,
-        data: [
-          { m: moment("2013-03-04 01:00"), v: 10 },
-          { m: moment("2013-03-04 02:00"), v: 10 },
-          { m: moment("2013-03-04 03:00"), v: 20 },
-          { m: moment("2013-03-04 04:00"), v: 30 },
-          { m: moment("2013-03-04 05:00"), v: 20 },
-          { m: moment("2013-03-04 06:00"), v: 10 },
-          { m: moment("2013-03-04 07:00"), v: 10 },
-        ]
-      };
-
-      this.addPredictionList(prediction2);
-    },
-
     addPredictionList: function(prediction){
-      if (this.getSamePrediction(this.predictions, prediction) == null){
-        this.predictions.push(prediction);
-      }
+      this.predictions.push(prediction);
     },
 
     deletePrediction: function(target){

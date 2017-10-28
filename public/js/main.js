@@ -26,21 +26,39 @@ new Vue({
   },
 
   computed: {
+    selectedPredictions: function(){
+      return this.predictions
+        .filter(function(p){
+          return p.isSelected;
+        });
+    },
     firstPredictions: function(){
-      return this.predictions.filter(function(p,i){
-        return i < 3;
-      });
+      return this.predictions
+        .filter(function(p){
+          return p.isSelected;
+        })
+        .filter(function(p,i){
+          return i < 3;
+        });
     },
     secondPredictions: function(){
-      return this.predictions.filter(function(p,i){
-        return 3 <= i && i < 6;
-      });
+      return this.predictions
+        .filter(function(p){
+          return p.isSelected;
+        })
+        .filter(function(p,i){
+          return 3 <= i && i < 6;
+        });
     },
     thirdPredictions: function(){
-      return this.predictions.filter(function(p,i){
-        return i >= 6;
-      });
-    }
+      return this.predictions
+        .filter(function(p){
+          return p.isSelected;
+        })
+        .filter(function(p,i){
+          return i >= 6;
+        });
+    },
   },
 
   mounted: function(){
@@ -60,6 +78,7 @@ new Vue({
         target.data = prediction.data;
       }else{
         prediction.redraw = true;
+        prediction.isSelected = false;
         self.addPredictionList(prediction);
 
         self.predictions.forEach(function(p){
@@ -70,11 +89,8 @@ new Vue({
       }
     });
 
-
     window.addEventListener('resize', function (event) {
-      self.predictions.forEach(function(p){
-        p.redraw = !p.redraw;
-      });
+      self.redrawAll();
     });
   },
 
@@ -87,14 +103,22 @@ new Vue({
       return prediction.data.length;
     },
     
-    addPredictionList: function(prediction){
-      this.predictions.push(prediction);
+    redrawAll: function(){
+      var self = this;
+      // 状態変更後に遅延描画する
+      setTimeout(function(){
+        self.predictions
+          .filter(function(p){
+            return p.isSelected;
+          })
+          .forEach(function(p){
+            p.redraw = !p.redraw;
+          });
+      },10);
     },
 
-    deletePrediction: function(target){
-      var index = this.predictions.indexOf(target);
-      if (index < 0){ return; }
-      this.predictions.splice(index,1);
+    addPredictionList: function(prediction){
+      this.predictions.push(prediction);
     },
 
     getSamePrediction: function(list, target){
@@ -103,13 +127,14 @@ new Vue({
       })[0];
     },
 
-    selectHistory: function(history){
-      this.selectedPrediction = history;
-      this.addPredictionList(history);
+    selectListItem: function(prediction){
+      var self = this;
+      prediction.isSelected = !prediction.isSelected;
+      self.redrawAll();
     },
 
-    isSelected: function(history){
-      return this.predictions.indexOf(history) != -1;
+    isSelected: function(prediction){
+      return prediction.isSelected;
     },
   }
 });

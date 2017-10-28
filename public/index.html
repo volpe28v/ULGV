@@ -12,12 +12,11 @@
       <div class="leftpane">
         <div class="left-body">
           <ul class="history">
-            <li v-for="prediction in predictions" v-bind:class="{ 'selected-history': isSelected(prediction)}" v-on:click="selectHistory(prediction)" v-on:dblclick="deletePrediction(prediction)">
+            <li v-for="prediction in predictions" v-bind:class="{ 'selected-history': isSelected(prediction)}" v-on:click="selectListItem(prediction)">
               <div class="history-body">
                 <div>
                   ID:{{prediction.id}} {{firstDate(prediction)}} - {{dataCount(prediction)}}
                 </div>
-                <div class="history-delete" v-on:click.stop="deleteHistory(prediction)">X</div>
               </div>
             </li>
           </ul>
@@ -31,30 +30,30 @@
                     :prediction-id="prediction.id"
                     :data="prediction.data"
                     :redraw="prediction.redraw"
-                    v-on:delete-prediction="deletePrediction"
+                    v-on:delete-prediction="selectListItem"
                     >
         </graph>
       </div>
 
-      <div class="rightpane2" v-if="predictions.length > 3">
+      <div class="rightpane2" v-if="selectedPredictions.length > 3">
         <graph class="prediction"
                     v-for="(prediction, index) in secondPredictions"
                     :key="index"
                     :prediction-id="prediction.id"
                     :data="prediction.data"
                     :redraw="prediction.redraw"
-                    v-on:delete-prediction="deletePrediction"
+                    v-on:delete-prediction="selectListItem"
                     >
         </graph>
       </div>
-      <div class="rightpane3" v-if="predictions.length > 6">
+      <div class="rightpane3" v-if="selectedPredictions.length > 6">
         <graph class="prediction"
                     v-for="(prediction, index) in thirdPredictions"
                     :key="index"
                     :prediction-id="prediction.id"
                     :data="prediction.data"
                     :redraw="prediction.redraw"
-                    v-on:delete-prediction="deletePrediction"
+                    v-on:delete-prediction="selectListItem"
                     >
         </graph>
       </div>

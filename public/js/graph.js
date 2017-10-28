@@ -5,7 +5,7 @@ moment.locale('ja');
 var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
-      <div class="title-area"></div>\
+      <div class="title-area">ID:{{predictionId}}</div>\
       <div class="delete-button" v-on:click="deletePrediction">x</div>\
     </div>\
     <div class="svg-area">\
@@ -13,7 +13,7 @@ var graphComponent = Vue.component('graph',{
     </div>\
   </div>',
 
-  props: ['prediction','data','redraw'],
+  props: ['predictionId','data','redraw'],
 
   data: function(){
     return {
@@ -42,10 +42,12 @@ var graphComponent = Vue.component('graph',{
   },
 
   updated: function(){
+    /*
     if (this.prediction.id != this.chartSetting.ProjectID){
       // 削除後にProjectID がずれたら読み直す
       //this.update();
     }
+    */
   },
 
   methods: {

@@ -59,8 +59,22 @@ new Vue({
       if (target){
         target.data = prediction.data;
       }else{
+        prediction.redraw = true;
         self.addPredictionList(prediction);
+
+        self.predictions.forEach(function(p){
+          if (p != prediction){
+            p.redraw = !p.redraw;
+          }
+        });
       }
+    });
+
+
+    window.addEventListener('resize', function (event) {
+      self.predictions.forEach(function(p){
+        p.redraw = !p.redraw;
+      });
     });
   },
 

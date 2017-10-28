@@ -13,7 +13,7 @@ var graphComponent = Vue.component('graph',{
     </div>\
   </div>',
 
-  props: ['prediction','data'],
+  props: ['prediction','data','redraw'],
 
   data: function(){
     return {
@@ -30,6 +30,9 @@ var graphComponent = Vue.component('graph',{
 
   watch: {
     data: function(){
+      this.update();
+    },
+    redraw: function(){
       this.update();
     }
   },

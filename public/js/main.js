@@ -119,6 +119,9 @@ new Vue({
 
     addPredictionList: function(prediction){
       this.predictions.push(prediction);
+      this.predictions.sort(function(a,b){
+        return (a.id < b.id) ? -1 : 1;
+      });
     },
 
     getSamePrediction: function(list, target){

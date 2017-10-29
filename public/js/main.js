@@ -133,6 +133,13 @@ new Vue({
       self.redrawAll();
     },
 
+    deletePrediction: function(predictionId){
+      var self = this;
+      self.predictions.filter(function(p) { return p.id == predictionId; })[0].isSelected = false;
+      self.redrawAll();
+    },
+
+
     isSelected: function(prediction){
       return prediction.isSelected;
     },

@@ -5,7 +5,7 @@ moment.locale('ja');
 var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
-      <div class="title-area">ID:{{predictionId}}</div>\
+      <div class="title-area">ID:{{predictionId}} {{firstPredictionDate}}</div>\
       <div class="delete-button" v-on:click="deletePrediction">x</div>\
     </div>\
     <div class="svg-area">\
@@ -26,6 +26,13 @@ var graphComponent = Vue.component('graph',{
   },
 
   computed: {
+    firstPredictionDate: function(){
+      if (this.predictionResult != null){
+        return this.predictionResult[0].moment.format("YYYY/MM/DD hh:mm");
+      }else{
+        return "";
+      }
+    }
   },
 
   watch: {
@@ -320,7 +327,7 @@ var graphComponent = Vue.component('graph',{
 		},
 
     deletePrediction: function(){
-      this.$emit('delete-prediction', this.prediction);
+      this.$emit('delete-prediction', this.predictionId);
     }
 
   }

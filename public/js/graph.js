@@ -28,7 +28,7 @@ var graphComponent = Vue.component('graph',{
   computed: {
     firstPredictionDate: function(){
       if (this.predictionResult != null){
-        return this.predictionResult[0].moment.format("YYYY/MM/DD hh:mm");
+        return this.predictionResult[0].moment.format("YYYY/MM/DD HH:mm");
       }else{
         return "";
       }
@@ -104,10 +104,10 @@ var graphComponent = Vue.component('graph',{
         self.predictionResult[self.predictionResult.length-1].moment.toDate()
       ];
 
+      var yMax = Math.max.apply(null, self.predictionResult.map(function(r){ return Number(r.value); }));
       self.chartSetting = {
-        ProjectID: 1,
         YMinValue: 0,
-        YMaxValue: 200,
+        YMaxValue: yMax + yMax/5,
       };
     },
 

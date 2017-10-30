@@ -96,7 +96,7 @@ new Vue({
 
   methods: {
     firstDate: function(prediction){
-      return prediction.data[0].m.format("YYYY/MM/DD hh:mm");
+      return prediction.data[0].m.format("YYYY/MM/DD HH:mm");
     },
 
     dataCount: function(prediction){

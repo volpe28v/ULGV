@@ -25,7 +25,7 @@ app.post('/prediction', function(req, res){
 
   console.log(data);
 
-  io.sockets.emit('prediction', data);
+  index_socket.sendAll(data);
 
   res.json({});
 });

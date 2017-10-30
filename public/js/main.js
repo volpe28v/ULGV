@@ -120,7 +120,7 @@ new Vue({
     addPredictionList: function(prediction){
       this.predictions.push(prediction);
       this.predictions.sort(function(a,b){
-        return (a.id < b.id) ? -1 : 1;
+        return (Number(a.id) < Number(b.id)) ? -1 : 1;
       });
     },
 

@@ -5,7 +5,7 @@ moment.locale('ja');
 var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
-      <div class="title-area">ID:{{predictionId}} {{firstPredictionDate}}</div>\
+      <div class="title-area">ID:{{predictionId}} {{firstPredictionDate}} - {{lastPredictionDate}} - {{predictionCount}}</div>\
       <div class="delete-button" v-on:click="deletePrediction">x</div>\
     </div>\
     <div class="svg-area">\
@@ -32,6 +32,20 @@ var graphComponent = Vue.component('graph',{
       }else{
         return "";
       }
+    },
+    lastPredictionDate: function(){
+      if (this.predictionResult != null){
+        return this.predictionResult[this.predictionResult.length-1].moment.format("YYYY/MM/DD HH:mm");
+      }else{
+        return "";
+      }
+    },
+    predictionCount: function(){
+      if (this.predictionResult != null){
+        return this.predictionResult.length;
+      }else{
+        return 0;
+      }
     }
   },
 
@@ -46,15 +60,6 @@ var graphComponent = Vue.component('graph',{
 
   mounted: function(){
     this.update();
-  },
-
-  updated: function(){
-    /*
-    if (this.prediction.id != this.chartSetting.ProjectID){
-      // 削除後にProjectID がずれたら読み直す
-      //this.update();
-    }
-    */
   },
 
   methods: {
@@ -79,25 +84,6 @@ var graphComponent = Vue.component('graph',{
           value: d.v
         };
       });
-
-
-      /*
-      self.predictionResult = [
-        { m: moment("2013-02-08 01:00"), v: 100 },
-        { m: moment("2013-02-08 02:00"), v: 110 },
-        { m: moment("2013-02-08 03:00"), v: 120 },
-        { m: moment("2013-02-08 04:00"), v: 130 },
-        { m: moment("2013-02-08 05:00"), v: 120 },
-        { m: moment("2013-02-08 06:00"), v: 110 },
-        { m: moment("2013-02-08 07:00"), v: 100 },
-      ].map(function(d){
-        return {
-          moment: d.m,
-          date: d.m.toDate(),
-          value: d.v
-        };
-      });
-      */
 
       self.xMinMax = [
         self.predictionResult[0].moment.toDate(),
@@ -329,7 +315,6 @@ var graphComponent = Vue.component('graph',{
     deletePrediction: function(){
       this.$emit('delete-prediction', this.predictionId);
     }
-
   }
 });
 

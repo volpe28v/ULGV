@@ -50,6 +50,13 @@ new Vue({
           return 3 <= i && i < 6;
         });
     },
+    secondPredictionsDummy: function(){
+      var dummyCount = 6 - this.predictions.filter(function(p){ return p.isSelected; }).length;
+      dummyCount = dummyCount > 3 ? 3 : dummyCount;
+      dummyCount = dummyCount < 0 ? 0 : dummyCount;
+      return new Array(dummyCount);
+    },
+ 
     thirdPredictions: function(){
       return this.predictions
         .filter(function(p){
@@ -59,6 +66,13 @@ new Vue({
           return i >= 6;
         });
     },
+    thirdPredictionsDummy: function(){
+      var dummyCount = 9 - this.predictions.filter(function(p){ return p.isSelected; }).length;
+      dummyCount = dummyCount > 3 ? 3 : dummyCount;
+      dummyCount = dummyCount < 0 ? 0 : dummyCount;
+      return new Array(dummyCount);
+    },
+ 
   },
 
   mounted: function(){

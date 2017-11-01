@@ -45,6 +45,7 @@
                     v-on:delete-prediction="deletePrediction"
                     >
         </graph>
+        <div class="prediction-dummy" v-for="dummy in secondPredictionsDummy"></div>
       </div>
       <div class="rightpane3" v-if="selectedPredictions.length > 6">
         <graph class="prediction"
@@ -56,6 +57,7 @@
                     v-on:delete-prediction="deletePrediction"
                     >
         </graph>
+        <div class="prediction-dummy" v-for="dummy in thirdPredictionsDummy"></div>
       </div>
  
     </div>

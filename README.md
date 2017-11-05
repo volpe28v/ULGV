@@ -1,7 +1,11 @@
 # ULGV 
 汎用的なライングラフビューア
 
-グラフにしたいデータを Post するとリアルタイムに描画される
+グラフにしたいデータを Post するとリアルタイムに描画されるだけ
+
+何らかの出力データを比較的簡単に可視化してリアルタイム監視したい場合に使えそう
+
+<img width="1436" alt="ulgv" src="https://user-images.githubusercontent.com/754962/32416115-0a7cae2e-c287-11e7-9d55-f1cd0c50803a.png">
 
 ### Technology
 * Vue.js

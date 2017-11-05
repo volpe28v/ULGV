@@ -82,7 +82,7 @@ new Vue({
       console.log(graph);
 
       graph.data = graph.data.map(function(d){
-        d.m = moment(d.m);
+        d.m = moment(d.t);
         return d;
       });
 

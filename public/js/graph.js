@@ -74,7 +74,6 @@ var graphComponent = Vue.component('graph',{
     updateData: function(){
       var self = this;
 
-      // 水位予測
       self.graphData = self.data
       .map(function(d){
         return {

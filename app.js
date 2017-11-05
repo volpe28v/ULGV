@@ -20,7 +20,7 @@ program
 
 app.set('port', program.port || process.env.PORT || 3000);
 
-app.post('/prediction', function(req, res){
+app.post('/graph', function(req, res){
   var data = req.body;
 
   console.log(data);

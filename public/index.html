@@ -12,10 +12,10 @@
       <div class="leftpane">
         <div class="left-body">
           <ul class="history">
-            <li v-for="prediction in predictions" v-bind:class="{ 'selected-history': isSelected(prediction)}" v-on:click="selectListItem(prediction)">
+            <li v-for="graph in graphs" v-bind:class="{ 'selected-history': isSelected(graph)}" v-on:click="selectListItem(graph)">
               <div class="history-body">
                 <div>
-                  ID:{{prediction.id}} {{firstDate(prediction)}} - {{dataCount(prediction)}}
+                  ID:{{graph.id}} {{firstDate(graph)}} - {{dataCount(graph)}}
                 </div>
               </div>
             </li>
@@ -24,40 +24,40 @@
       </div>
 
       <div class="rightpane">
-        <graph class="prediction"
-                    v-for="(prediction, index) in firstPredictions"
+        <graph class="graph"
+                    v-for="(graph, index) in firstGraphs"
                     :key="index"
-                    :prediction-id="prediction.id"
-                    :data="prediction.data"
-                    :redraw="prediction.redraw"
-                    v-on:delete-prediction="deletePrediction"
+                    :graph-id="graph.id"
+                    :data="graph.data"
+                    :redraw="graph.redraw"
+                    v-on:delete-graph="deleteGraph"
                     >
         </graph>
       </div>
 
-      <div class="rightpane2" v-if="selectedPredictions.length > 3">
-        <graph class="prediction"
-                    v-for="(prediction, index) in secondPredictions"
+      <div class="rightpane2" v-if="selectedGraphs.length > 3">
+        <graph class="graph"
+                    v-for="(graph, index) in secondGraphs"
                     :key="index"
-                    :prediction-id="prediction.id"
-                    :data="prediction.data"
-                    :redraw="prediction.redraw"
-                    v-on:delete-prediction="deletePrediction"
+                    :graph-id="graph.id"
+                    :data="graph.data"
+                    :redraw="graph.redraw"
+                    v-on:delete-graph="deleteGraph"
                     >
         </graph>
-        <div class="prediction-dummy" v-for="dummy in secondPredictionsDummy"></div>
+        <div class="graph-dummy" v-for="dummy in secondGraphsDummy"></div>
       </div>
-      <div class="rightpane3" v-if="selectedPredictions.length > 6">
-        <graph class="prediction"
-                    v-for="(prediction, index) in thirdPredictions"
+      <div class="rightpane3" v-if="selectedGraphs.length > 6">
+        <graph class="graph"
+                    v-for="(graph, index) in thirdGraphs"
                     :key="index"
-                    :prediction-id="prediction.id"
-                    :data="prediction.data"
-                    :redraw="prediction.redraw"
-                    v-on:delete-prediction="deletePrediction"
+                    :graph-id="graph.id"
+                    :data="graph.data"
+                    :redraw="graph.redraw"
+                    v-on:delete-graph="deleteGraph"
                     >
         </graph>
-        <div class="prediction-dummy" v-for="dummy in thirdPredictionsDummy"></div>
+        <div class="graph-dummy" v-for="dummy in thirdGraphsDummy"></div>
       </div>
  
     </div>

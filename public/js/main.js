@@ -19,55 +19,54 @@ new Vue({
   el: '#app',
   data: function(){
     return {
-      predictions: [],
-      selectedPrediction: null,
+      graphs: [],
       socket: socket,
     }
   },
 
   computed: {
-    selectedPredictions: function(){
-      return this.predictions
-        .filter(function(p){
-          return p.isSelected;
+    selectedGraphs: function(){
+      return this.graphs
+        .filter(function(g){
+          return g.isSelected;
         });
     },
-    firstPredictions: function(){
-      return this.predictions
-        .filter(function(p){
-          return p.isSelected;
+    firstGraphs: function(){
+      return this.graphs
+        .filter(function(g){
+          return g.isSelected;
         })
-        .filter(function(p,i){
+        .filter(function(g,i){
           return i < 3;
         });
     },
-    secondPredictions: function(){
-      return this.predictions
-        .filter(function(p){
-          return p.isSelected;
+    secondGraphs: function(){
+      return this.graphs
+        .filter(function(g){
+          return g.isSelected;
         })
-        .filter(function(p,i){
+        .filter(function(g,i){
           return 3 <= i && i < 6;
         });
     },
-    secondPredictionsDummy: function(){
-      var dummyCount = 6 - this.predictions.filter(function(p){ return p.isSelected; }).length;
+    secondGraphsDummy: function(){
+      var dummyCount = 6 - this.graphs.filter(function(g){ return g.isSelected; }).length;
       dummyCount = dummyCount > 3 ? 3 : dummyCount;
       dummyCount = dummyCount < 0 ? 0 : dummyCount;
       return new Array(dummyCount);
     },
  
-    thirdPredictions: function(){
-      return this.predictions
-        .filter(function(p){
-          return p.isSelected;
+    thirdGraphs: function(){
+      return this.graphs
+        .filter(function(g){
+          return g.isSelected;
         })
-        .filter(function(p,i){
+        .filter(function(g,i){
           return i >= 6;
         });
     },
-    thirdPredictionsDummy: function(){
-      var dummyCount = 9 - this.predictions.filter(function(p){ return p.isSelected; }).length;
+    thirdGraphsDummy: function(){
+      var dummyCount = 9 - this.graphs.filter(function(g){ return g.isSelected; }).length;
       dummyCount = dummyCount > 3 ? 3 : dummyCount;
       dummyCount = dummyCount < 0 ? 0 : dummyCount;
       return new Array(dummyCount);
@@ -78,26 +77,26 @@ new Vue({
   mounted: function(){
     var self = this;
 
-    self.socket.on("prediction", function(prediction){
-      if (prediction == null) return;
-      console.log(prediction);
+    self.socket.on("graph_data", function(graph){
+      if (graph == null) return;
+      console.log(graph);
 
-      prediction.data = prediction.data.map(function(d){
+      graph.data = graph.data.map(function(d){
         d.m = moment(d.m);
         return d;
       });
 
-      var target = self.predictions.filter(function(p){ return p.id == prediction.id; })[0];
+      var target = self.graphs.filter(function(g){ return g.id == graph.id; })[0];
       if (target){
-        target.data = prediction.data;
+        target.data = graph.data;
       }else{
-        prediction.redraw = true;
-        prediction.isSelected = false;
-        self.addPredictionList(prediction);
+        graph.redraw = true;
+        graph.isSelected = false;
+        self.addGraphList(graph);
 
-        self.predictions.forEach(function(p){
-          if (p != prediction){
-            p.redraw = !p.redraw;
+        self.graphs.forEach(function(g){
+          if (g != graph){
+            g.redraw = !g.redraw;
           }
         });
       }
@@ -109,19 +108,19 @@ new Vue({
   },
 
   methods: {
-    firstDate: function(prediction){
-      return prediction.data[0].m.format("YYYY/MM/DD HH:mm");
+    firstDate: function(graph){
+      return graph.data[0].m.format("YYYY/MM/DD HH:mm");
     },
 
-    dataCount: function(prediction){
-      return prediction.data.length;
+    dataCount: function(graph){
+      return graph.data.length;
     },
     
     redrawAll: function(){
       var self = this;
       // 状態変更後に遅延描画する
       setTimeout(function(){
-        self.predictions
+        self.graphs
           .filter(function(p){
             return p.isSelected;
           })
@@ -131,34 +130,34 @@ new Vue({
       },10);
     },
 
-    addPredictionList: function(prediction){
-      this.predictions.push(prediction);
-      this.predictions.sort(function(a,b){
+    addGraphList: function(graph){
+      this.graphs.push(graph);
+      this.graphs.sort(function(a,b){
         return (Number(a.id) < Number(b.id)) ? -1 : 1;
       });
     },
 
-    getSamePrediction: function(list, target){
-      return list.filter(function(p){
-        return p.id == target.id
+    getSameGraph: function(list, target){
+      return list.filter(function(g){
+        return g.id == target.id
       })[0];
     },
 
-    selectListItem: function(prediction){
+    selectListItem: function(graph){
       var self = this;
-      prediction.isSelected = !prediction.isSelected;
+      graph.isSelected = !graph.isSelected;
       self.redrawAll();
     },
 
-    deletePrediction: function(predictionId){
+    deleteGraph: function(graphId){
       var self = this;
-      self.predictions.filter(function(p) { return p.id == predictionId; })[0].isSelected = false;
+      self.graphs.filter(function(g) { return g.id == graphId; })[0].isSelected = false;
       self.redrawAll();
     },
 
 
-    isSelected: function(prediction){
-      return prediction.isSelected;
+    isSelected: function(graph){
+      return graph.isSelected;
     },
   }
 });

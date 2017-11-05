@@ -5,19 +5,19 @@ moment.locale('ja');
 var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
-      <div class="title-area">ID:{{predictionId}} {{firstPredictionDate}} - {{lastPredictionDate}} - {{predictionCount}}</div>\
-      <div class="delete-button" v-on:click="deletePrediction">x</div>\
+      <div class="title-area">ID:{{graphId}} {{firstGraphDate}} - {{lastGraphDate}} - {{graphCount}}</div>\
+      <div class="delete-button" v-on:click="deleteGraph">x</div>\
     </div>\
     <div class="svg-area">\
-      <svg class="prediction-svg"></svg>\
+      <svg class="graph-svg"></svg>\
     </div>\
   </div>',
 
-  props: ['predictionId','data','redraw'],
+  props: ['graphId','data','redraw'],
 
   data: function(){
     return {
-      predictionResult: null,
+      graphData: null,
       chartSetting: null,
       svgWidth: 0,
       svgHeight: 0,
@@ -26,23 +26,23 @@ var graphComponent = Vue.component('graph',{
   },
 
   computed: {
-    firstPredictionDate: function(){
-      if (this.predictionResult != null){
-        return this.predictionResult[0].moment.format("YYYY/MM/DD HH:mm");
+    firstGraphDate: function(){
+      if (this.graphData != null){
+        return this.graphData[0].moment.format("YYYY/MM/DD HH:mm");
       }else{
         return "";
       }
     },
-    lastPredictionDate: function(){
-      if (this.predictionResult != null){
-        return this.predictionResult[this.predictionResult.length-1].moment.format("YYYY/MM/DD HH:mm");
+    lastGraphDate: function(){
+      if (this.graphData != null){
+        return this.graphData[this.graphData.length-1].moment.format("YYYY/MM/DD HH:mm");
       }else{
         return "";
       }
     },
-    predictionCount: function(){
-      if (this.predictionResult != null){
-        return this.predictionResult.length;
+    graphCount: function(){
+      if (this.graphData != null){
+        return this.graphData.length;
       }else{
         return 0;
       }
@@ -76,7 +76,7 @@ var graphComponent = Vue.component('graph',{
       var self = this;
 
       // 水位予測
-      self.predictionResult = self.data
+      self.graphData = self.data
       .map(function(d){
         return {
           moment: d.m,
@@ -86,11 +86,11 @@ var graphComponent = Vue.component('graph',{
       });
 
       self.xMinMax = [
-        self.predictionResult[0].moment.toDate(),
-        self.predictionResult[self.predictionResult.length-1].moment.toDate()
+        self.graphData[0].moment.toDate(),
+        self.graphData[self.graphData.length-1].moment.toDate()
       ];
 
-      var yMax = Math.max.apply(null, self.predictionResult.map(function(r){ return Number(r.value); }));
+      var yMax = Math.max.apply(null, self.graphData.map(function(r){ return Number(r.value); }));
       self.chartSetting = {
         YMinValue: 0,
         YMaxValue: yMax + yMax/5,
@@ -141,17 +141,14 @@ var graphComponent = Vue.component('graph',{
         move: [],
       };
 
-      // 水位グラフ
-      self.drawWaterLevelGraph(g, x, width, height, mouseHandlers);
-
-      // フォーカス
+      self.drawGraphLine(g, x, width, height, mouseHandlers);
       self.drawFocuses(g, width, height, mouseHandlers);
     },
 
-    drawWaterLevelGraph: function(g, x, width, height, mouseHandlers){
+    drawGraphLine: function(g, x, width, height, mouseHandlers){
       var self = this;
 
-      var adjustedPlan = self.predictionResult;
+      var adjustedPlan = self.graphData;
 
       var water_lines = [
         { id: "water-plan"  , color: "lime" , values: adjustedPlan },
@@ -188,7 +185,7 @@ var graphComponent = Vue.component('graph',{
         .attr("d", function(d){ return line(d.values);});
 
       // カーソル
-      self.drawWaterLevelFocus(g, x, y, width, height, adjustedPlan, mouseHandlers);
+      self.drawFocus(g, x, y, width, height, adjustedPlan, mouseHandlers);
     },
 
     drawFocuses: function(g, width, height, mouseHandlers){
@@ -263,7 +260,7 @@ var graphComponent = Vue.component('graph',{
       return focus;
     },
 
-		drawWaterLevelFocus: function(g, x, y, width, height, data, mouseHandlers){
+		drawFocus: function(g, x, y, width, height, data, mouseHandlers){
       var self = this;
       var bisectDate = d3.bisector(function(d){ return d.date; }).left;
 
@@ -312,8 +309,8 @@ var graphComponent = Vue.component('graph',{
       );
 		},
 
-    deletePrediction: function(){
-      this.$emit('delete-prediction', this.predictionId);
+    deleteGraph: function(){
+      this.$emit('delete-graph', this.graphId);
     }
   }
 });

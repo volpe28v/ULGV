@@ -4,7 +4,7 @@ moment.locale('ja');
 var graphComponent = Vue.component('graph',{
   template: '<div>\
     <div class="svg-header">\
-      <div class="title-area">ID:{{graphId}} {{firstGraphDate}} - {{lastGraphDate}} - {{graphCount}}</div>\
+      <div class="title-area" v-bind:class="{\'title-focused\': isFocused}">ID:{{graphId}} {{firstGraphDate}} - {{lastGraphDate}} - {{graphCount}}</div>\
       <div class="delete-button" v-on:click="deleteGraph">x</div>\
     </div>\
     <div class="svg-area">\
@@ -12,7 +12,7 @@ var graphComponent = Vue.component('graph',{
     </div>\
   </div>',
 
-  props: ['graphId','data','redraw'],
+  props: ['graphId','data','redraw','isFocused'],
 
   data: function(){
     return {
@@ -45,7 +45,7 @@ var graphComponent = Vue.component('graph',{
       }else{
         return 0;
       }
-    }
+    },
   },
 
   watch: {

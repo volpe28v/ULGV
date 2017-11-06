@@ -92,6 +92,7 @@ new Vue({
       }else{
         graph.redraw = true;
         graph.isSelected = false;
+        graph.isFocused = false;
         self.addGraphList(graph);
 
         self.graphs.forEach(function(g){
@@ -149,6 +150,17 @@ new Vue({
       self.redrawAll();
     },
 
+    enterListItem: function(graph){
+      var self = this;
+      graph.isFocused = true;
+    },
+
+    leaveListItem: function(graph){
+      var self = this;
+      graph.isFocused = false;
+    },
+
+
     deleteGraph: function(graphId){
       var self = this;
       self.graphs.filter(function(g) { return g.id == graphId; })[0].isSelected = false;
@@ -158,6 +170,10 @@ new Vue({
 
     isSelected: function(graph){
       return graph.isSelected;
+    },
+
+    isFocused: function(graph){
+      return graph.isFocused;
     },
   }
 });

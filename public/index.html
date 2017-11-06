@@ -12,7 +12,12 @@
       <div class="leftpane">
         <div class="left-body">
           <ul class="history">
-            <li v-for="graph in graphs" v-bind:class="{ 'selected-history': isSelected(graph)}" v-on:click="selectListItem(graph)">
+            <li v-for="graph in graphs"
+                v-bind:class="{'selected-history': isSelected(graph),'focused-history': isFocused(graph)}"
+                v-on:click="selectListItem(graph)"
+                v-on:mouseenter="enterListItem(graph)"
+                v-on:mouseleave="leaveListItem(graph)"
+                >
               <div class="history-body">
                 <div>
                   ID:{{graph.id}} {{firstDate(graph)}} - {{dataCount(graph)}}
@@ -30,6 +35,7 @@
                     :graph-id="graph.id"
                     :data="graph.data"
                     :redraw="graph.redraw"
+                    :is-focused="graph.isFocused"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
@@ -42,6 +48,7 @@
                     :graph-id="graph.id"
                     :data="graph.data"
                     :redraw="graph.redraw"
+                    :is-focused="graph.isFocused"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
@@ -54,6 +61,7 @@
                     :graph-id="graph.id"
                     :data="graph.data"
                     :redraw="graph.redraw"
+                    :is-focused="graph.isFocused"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>

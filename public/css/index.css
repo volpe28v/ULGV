@@ -109,13 +109,21 @@ html,body {
   padding: 5px 5px 0px 10px;
 }
 
+.title-focused {
+  color: cyan; 
+}
+
 .delete-button {
   padding-right: 10px;
   cursor: pointer;
 }
 
-.success, .selected-history {
+.selected-history {
   color: lime;
+}
+
+.focused-history {
+  color: cyan;
 }
 
 .error {

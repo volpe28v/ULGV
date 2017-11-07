@@ -13,7 +13,7 @@
         <div class="left-body">
           <ul class="history">
             <li v-for="graph in graphs"
-                v-bind:class="{'selected-history': isSelected(graph),'focused-history': isFocused(graph)}"
+                v-bind:class="{'selected-history': isSelected(graph),'focused-history': isFocused(graph), 'history-update': isUpdating(graph)}"
                 v-on:click="selectListItem(graph)"
                 v-on:mouseenter="enterListItem(graph)"
                 v-on:mouseleave="leaveListItem(graph)"
@@ -36,6 +36,7 @@
                     :data="graph.data"
                     :redraw="graph.redraw"
                     :is-focused="graph.isFocused"
+                    :is-updating="graph.isUpdating"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
@@ -49,6 +50,7 @@
                     :data="graph.data"
                     :redraw="graph.redraw"
                     :is-focused="graph.isFocused"
+                    :is-updating="graph.isUpdating"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
@@ -62,6 +64,7 @@
                     :data="graph.data"
                     :redraw="graph.redraw"
                     :is-focused="graph.isFocused"
+                    :is-updating="graph.isUpdating"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>

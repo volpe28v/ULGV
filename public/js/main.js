@@ -79,7 +79,6 @@ new Vue({
 
     self.socket.on("graph_data", function(graph){
       if (graph == null) return;
-      console.log(graph);
 
       graph.data = graph.data.map(function(d){
         d.m = moment(d.t);
@@ -89,10 +88,17 @@ new Vue({
       var target = self.graphs.filter(function(g){ return g.id == graph.id; })[0];
       if (target){
         target.data = graph.data;
+
+        // データ更新でグラフを目立たせる
+        target.isUpdating = true;
+        setTimeout(function(){
+          target.isUpdating = false;
+        },300);
       }else{
         graph.redraw = true;
         graph.isSelected = false;
         graph.isFocused = false;
+        graph.isUpdating = false;
         self.addGraphList(graph);
 
         self.graphs.forEach(function(g){
@@ -174,6 +180,10 @@ new Vue({
 
     isFocused: function(graph){
       return graph.isFocused;
+    },
+
+    isUpdating: function(graph){
+      return graph.isUpdating;
     },
   }
 });

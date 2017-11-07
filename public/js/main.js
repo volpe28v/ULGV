@@ -93,7 +93,7 @@ new Vue({
         target.isUpdating = true;
         setTimeout(function(){
           target.isUpdating = false;
-        },300);
+        },500);
       }else{
         graph.redraw = true;
         graph.isSelected = false;

@@ -12,7 +12,7 @@ var graphComponent = Vue.component('graph',{
     </div>\
   </div>',
 
-  props: ['graphId','data','redraw','isFocused','isUpdating'],
+  props: ['graphId','status','data','redraw','isFocused','isUpdating'],
 
   data: function(){
     return {
@@ -149,10 +149,8 @@ var graphComponent = Vue.component('graph',{
     drawGraphLine: function(g, x, width, height, mouseHandlers){
       var self = this;
 
-      var adjustedPlan = self.graphData;
-
-      var water_lines = [
-        { id: "water-plan"  , color: "lime" , values: adjustedPlan },
+      var graph_lines = [
+        { id: "1"  , color: self.status == "Normal" ? "lime" : "magenta", values: self.graphData },
       ];
 
       var y = d3.scaleLinear()
@@ -172,12 +170,12 @@ var graphComponent = Vue.component('graph',{
         .attr("dy", "0.71em")
         .attr("text-anchor", "end");
 
-      var water_line = g.selectAll(".water-line")
-        .data(water_lines)
+      var graph_line = g.selectAll(".graph-line")
+        .data(graph_lines)
         .enter().append("g")
-        .attr("class", "water-line");
+        .attr("class", "graph-line");
 
-      water_line.append("path")
+      graph_line.append("path")
         .attr("fill", "none")
         .attr("stroke", function(d){ return d.color;})
         .attr("stroke-linejoin", "round")
@@ -186,7 +184,7 @@ var graphComponent = Vue.component('graph',{
         .attr("d", function(d){ return line(d.values);});
 
       // カーソル
-      self.drawFocus(g, x, y, width, height, adjustedPlan, mouseHandlers);
+      self.drawFocus(g, x, y, width, height, self.graphData, mouseHandlers);
     },
 
     drawFocuses: function(g, width, height, mouseHandlers){

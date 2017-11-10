@@ -88,6 +88,10 @@ new Vue({
       var target = self.graphs.filter(function(g){ return g.id == graph.id; })[0];
       if (target){
         target.data = graph.data;
+        target.status = graph.status;
+        if (target.status == null){
+          target.status = "Normal";
+        }
 
         // データ更新でグラフを目立たせる
         target.isUpdating = true;
@@ -99,6 +103,9 @@ new Vue({
         graph.isSelected = false;
         graph.isFocused = false;
         graph.isUpdating = false;
+        if (graph.status == null){
+          graph.status = "Normal";
+        }
         self.addGraphList(graph);
 
         self.graphs.forEach(function(g){

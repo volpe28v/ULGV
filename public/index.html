@@ -13,7 +13,13 @@
         <div class="left-body">
           <ul class="history">
             <li v-for="graph in graphs"
-                v-bind:class="{'selected-history': isSelected(graph),'focused-history': isFocused(graph), 'history-update': isUpdating(graph)}"
+                v-bind:class="{
+                  'normal-history': isNormal(graph),
+                  'missing-history': !isNormal(graph),
+                  'selected-history': isSelected(graph),
+                  'focused-history': isFocused(graph), 
+                  'history-update': isUpdating(graph)
+                }"
                 v-on:click="selectListItem(graph)"
                 v-on:mouseenter="enterListItem(graph)"
                 v-on:mouseleave="leaveListItem(graph)"

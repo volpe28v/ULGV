@@ -57,7 +57,7 @@ html,body {
 }
 
 .history li, .add-form {
-  background: rgb(102, 102, 102);
+  background: rgb(60, 60, 60);
 
   margin: 3px 0px 3px 0px;
   padding: 2px 5px;
@@ -131,11 +131,19 @@ html,body {
   cursor: pointer;
 }
 
-.selected-history {
+.history .selected-history {
+  background: rgb(102, 102, 102);
+}
+
+.history .normal-history {
   color: lime;
 }
 
-.focused-history {
+.history .missing-history {
+  color: magenta;
+}
+
+.history .focused-history {
   color: cyan;
 }
 

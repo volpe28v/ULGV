@@ -192,5 +192,9 @@ new Vue({
     isUpdating: function(graph){
       return graph.isUpdating;
     },
+
+    isNormal: function(graph){
+      return graph.status == "Normal";
+    },
   }
 });

@@ -5,7 +5,7 @@
 
 何らかの出力データを比較的簡単に可視化してリアルタイム監視したい場合に使えそう
 
-<img width="1436" alt="ulgv" src="https://user-images.githubusercontent.com/754962/32416115-0a7cae2e-c287-11e7-9d55-f1cd0c50803a.png">
+<img width="1436" alt="ulgv" src="https://user-images.githubusercontent.com/754962/32957308-ad387fb4-cbfe-11e7-8d9c-8a94302cf996.png">
 
 ### Technology
 * Vue.js

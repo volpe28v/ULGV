@@ -232,20 +232,20 @@ var graphComponent = Vue.component('graph',{
     },
 
     createFocus: function(g){
-			var focus = g.append('g')
-				.attr('class', 'focus')
-				.style('display', 'none')
+      var focus = g.append('g')
+        .attr('class', 'focus')
+        .style('display', 'none')
         .style('opacity', 1.0);
 
-			focus.append('circle')
-				.attr('r', 4.5)
+      focus.append('circle')
+        .attr('r', 4.5)
         .styles({
           fill: 'none',
           stroke: 'white'
         });
 
-			focus.append('line')
-				.classed('x', true)
+      focus.append('line')
+        .classed('x', true)
         .styles({
           fill: 'none',
           'stroke': 'white',
@@ -253,8 +253,8 @@ var graphComponent = Vue.component('graph',{
           'stroke-dasharray': '3 3'
         });
 
-			focus.append('line')
-				.classed('y', true)
+      focus.append('line')
+        .classed('y', true)
         .styles({
           fill: 'none',
           'stroke': 'white',
@@ -262,9 +262,9 @@ var graphComponent = Vue.component('graph',{
           'stroke-dasharray': '3 3'
         });
 
-			focus.append('text')
-				.attr('x', 9)
-				.attr('dy', '.35em')
+      focus.append('text')
+        .attr('x', 9)
+        .attr('dy', '.35em')
         .styles({
           fill: 'white',
         });
@@ -272,18 +272,18 @@ var graphComponent = Vue.component('graph',{
       return focus;
     },
 
-		drawFocus: function(g, x, y, width, height, data, mouseHandlers){
+    drawFocus: function(g, x, y, width, height, data, mouseHandlers){
       var self = this;
       var bisectDate = d3.bisector(function(d){ return d.date; }).left;
 
       var focus = self.createFocus(g);
 
       mouseHandlers.over.push(
-				function(context){ focus.style('display', null);}
+        function(context){ focus.style('display', null);}
       );
 
       mouseHandlers.out.push(
-				function(context){ focus.style('display', 'none');}
+        function(context){ focus.style('display', 'none');}
       );
 
       mouseHandlers.move.push(
@@ -315,11 +315,11 @@ var graphComponent = Vue.component('graph',{
           var focus_text = d.moment.format('DD日 HH:mm') + " " + d3.format(',.2f')(d.value);
           focus.select('text')
             .text(focus_text)
-				    .attr('x', xOffset)
-				    .attr('y', -14);
+            .attr('x', xOffset)
+            .attr('y', -14);
         }
       );
-		},
+    },
 
     detailGraph: function(){
       this.$emit('detail-graph', this.graphId);

@@ -146,9 +146,18 @@ new Vue({
 
     addGraphList: function(graph){
       this.graphs.push(graph);
-      this.graphs.sort(function(a,b){
-        return (Number(a.id) < Number(b.id)) ? -1 : 1;
+      var numbers = this.graphs.filter(function(g){
+        return !isNaN(g.id);
+      }).sort(function(a,b){
+        return Number(a.id) - Number(b.id);
       });
+      var strings = this.graphs.filter(function(g){
+        return isNaN(g.id);
+      }).sort(function(a,b){
+        return a.id < b.id ? -1 : 1;
+      });
+
+      this.graphs = numbers.concat(strings);
     },
 
     getSameGraph: function(list, target){

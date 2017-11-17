@@ -150,7 +150,11 @@ var graphComponent = Vue.component('graph',{
       var self = this;
 
       var graph_lines = [
-        { id: "1"  , color: self.status == "Normal" ? "lime" : "magenta", values: self.graphData },
+        { id: "1"  ,
+          color: self.status == "Normal" ? "rgba(50,205,50, 1.0)" : "rgba(255,0,255, 1.0)",
+          area_color: self.status == "Normal" ? "rgba(50,205,50, 0.1)" : "rgba(255,0,255,0.1)",
+          values: self.graphData
+        },
       ];
 
       var y = d3.scaleLinear()
@@ -182,6 +186,16 @@ var graphComponent = Vue.component('graph',{
         .attr("stroke-linecap", "round")
         .attr("stroke-width", 2.5)
         .attr("d", function(d){ return line(d.values);});
+
+      // 塗りつぶし
+      var area = d3.area()
+        .x(function(d) { return x(d.date); })
+        .y0(function(d) { return height;})
+        .y1(function(d) { return y(d.value); });
+
+      graph_line.append("path")
+        .attr("fill", function(d){ return d.area_color;})
+        .attr("d", function(d){ return area(d.values);});
 
       // カーソル
       self.drawFocus(g, x, y, width, height, self.graphData, mouseHandlers);

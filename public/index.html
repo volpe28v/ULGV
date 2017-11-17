@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class="rightpane">
+      <div class="rightpane" v-if="graph_detail == null">
         <graph class="graph"
                     v-for="(graph, index) in firstGraphs"
                     :key="index"
@@ -44,12 +44,13 @@
                     :redraw="graph.redraw"
                     :is-focused="graph.isFocused"
                     :is-updating="graph.isUpdating"
+                    v-on:detail-graph="detailGraph"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
       </div>
 
-      <div class="rightpane2" v-if="selectedGraphs.length > 3">
+      <div class="rightpane2" v-if="graph_detail == null && selectedGraphs.length > 3">
         <graph class="graph"
                     v-for="(graph, index) in secondGraphs"
                     :key="index"
@@ -59,12 +60,14 @@
                     :redraw="graph.redraw"
                     :is-focused="graph.isFocused"
                     :is-updating="graph.isUpdating"
+                    v-on:detail-graph="detailGraph"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
         <div class="graph-dummy" v-for="dummy in secondGraphsDummy"></div>
       </div>
-      <div class="rightpane3" v-if="selectedGraphs.length > 6">
+
+      <div class="rightpane3" v-if="graph_detail == null && selectedGraphs.length > 6">
         <graph class="graph"
                     v-for="(graph, index) in thirdGraphs"
                     :key="index"
@@ -74,12 +77,32 @@
                     :redraw="graph.redraw"
                     :is-focused="graph.isFocused"
                     :is-updating="graph.isUpdating"
+                    v-on:detail-graph="detailGraph"
                     v-on:delete-graph="deleteGraph"
                     >
         </graph>
         <div class="graph-dummy" v-for="dummy in thirdGraphsDummy"></div>
       </div>
- 
+
+      <div class="rightpane" v-if="graph_detail != null">
+        <graph class="graph"
+                    :graph-id="graph_detail.id"
+                    :status="graph_detail.status"
+                    :data="graph_detail.data"
+                    :redraw="graph_detail.redraw"
+                    :is-focused="graph_detail.isFocused"
+                    :is-updating="graph_detail.isUpdating"
+                    v-on:detail-graph="detailGraph"
+                    v-on:delete-graph="deleteGraph"
+                    >
+      </div>
+      <div class="rightpane-detail" v-if="graph_detail != null">
+        <table>
+          <tr v-for="one_data in graph_detail.data">
+            <td>{{one_data.m.format("YYYY/MM/DD HH:mm")}}</td>
+            <td>{{one_data.v}}</td></tr>
+        </table>
+      </div>
     </div>
 
     <script src="https://www.promisejs.org/polyfills/promise-6.1.0.js"></script>

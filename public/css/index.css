@@ -48,6 +48,17 @@ html,body {
   padding: 5px 5px 5px 0;
 }
 
+.rightpane-detail {
+  flex: 0.3;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 5px 5px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  font-size: 11px;
+}
+
 .history {
   list-style-type: none;
   padding-left: 0px;
@@ -153,6 +164,7 @@ html,body {
 
 .svg-area {
   flex: 1;
+  cursor: pointer;
 }
 
 .graph-svg {

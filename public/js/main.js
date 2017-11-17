@@ -21,6 +21,7 @@ new Vue({
     return {
       graphs: [],
       socket: socket,
+      graph_detail: null,
     }
   },
 
@@ -71,7 +72,6 @@ new Vue({
       dummyCount = dummyCount < 0 ? 0 : dummyCount;
       return new Array(dummyCount);
     },
- 
   },
 
   mounted: function(){
@@ -189,6 +189,14 @@ new Vue({
       self.redrawAll();
     },
 
+    detailGraph: function(graphId){
+      var self = this;
+      if (self.graph_detail == null || self.graph_detail.id != graphId){
+        self.graph_detail = self.graphs.filter(function(g) { return g.id == graphId; })[0];
+      }else{
+        self.graph_detail = null;
+      }
+    },
 
     isSelected: function(graph){
       return graph.isSelected;

@@ -7,7 +7,7 @@ var graphComponent = Vue.component('graph',{
       <div class="title-area" v-bind:class="{\'title-focused\': isFocused}">ID:{{graphId}} {{firstGraphDate}} - {{lastGraphDate}} - {{graphCount}}</div>\
       <div class="delete-button" v-on:click="deleteGraph">x</div>\
     </div>\
-    <div class="svg-area" v-on:dblclick="detailGraph">\
+    <div class="svg-area" v-on:click="detailGraph">\
       <svg class="graph-svg"></svg>\
     </div>\
   </div>',

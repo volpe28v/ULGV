@@ -94,7 +94,7 @@ var graphComponent = Vue.component('graph',{
       var yMax = Math.max.apply(null, self.graphData.map(function(r){ return Number(r.value); }));
       self.chartSetting = {
         YMinValue: yMin > 0 ? 0 : yMin + yMin/5,
-        YMaxValue: yMax + yMax/5,
+        YMaxValue: yMax < 0 ? 0 : yMax + yMax/5,
       };
     },
 

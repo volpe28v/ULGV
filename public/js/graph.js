@@ -90,9 +90,10 @@ var graphComponent = Vue.component('graph',{
         self.graphData[self.graphData.length-1].moment.toDate()
       ];
 
+      var yMin = Math.min.apply(null, self.graphData.map(function(r){ return Number(r.value); }));
       var yMax = Math.max.apply(null, self.graphData.map(function(r){ return Number(r.value); }));
       self.chartSetting = {
-        YMinValue: 0,
+        YMinValue: yMin > 0 ? 0 : yMin + yMin/5,
         YMaxValue: yMax + yMax/5,
       };
     },
@@ -135,33 +136,9 @@ var graphComponent = Vue.component('graph',{
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
-      var mouseHandlers = {
-        over: [],
-        out: [],
-        move: [],
-      };
-
-      self.drawGraphLine(g, x, width, height, mouseHandlers);
-      self.drawFocuses(g, width, height, mouseHandlers);
-    },
-
-    drawGraphLine: function(g, x, width, height, mouseHandlers){
-      var self = this;
-
-      var graph_lines = [
-        { id: "1"  ,
-          color: self.status == "Normal" ? "rgba(50,205,50, 1.0)" : "rgba(255,0,255, 1.0)",
-          area_color: self.status == "Normal" ? "rgba(50,205,50, 0.1)" : "rgba(255,0,255,0.1)",
-          values: self.graphData
-        },
-      ];
-
+      // Y軸生成
       var y = d3.scaleLinear()
         .rangeRound([height, 0]);
-
-      var line = d3.line()
-        .x(function(d) { return x(d.date); })
-        .y(function(d) { return y(d.value); });
 
       y.domain([self.chartSetting.YMinValue, self.chartSetting.YMaxValue]);
 
@@ -173,9 +150,44 @@ var graphComponent = Vue.component('graph',{
         .attr("dy", "0.71em")
         .attr("text-anchor", "end");
 
+      var line = d3.line()
+        .x(function(d){ return x(d.date); })
+        .y(function(d){ return y(d.value); });
+
+      if (self.chartSetting.YMinValue < 0){
+        // 0軸を表示する
+        g.append("path")
+          .datum([{date: self.xMinMax[0], value: 0},{date:self.xMinMax[1], value:0}])
+          .attr("fill", "none")
+          .attr("stroke", "#bbb")
+          .attr("d", line);
+      }
+
+      var mouseHandlers = {
+        over: [],
+        out: [],
+        move: [],
+      };
+
+      self.drawGraphLine(g, x, y, width, height, line, mouseHandlers);
+      self.drawFocuses(g, width, height, mouseHandlers);
+    },
+
+    drawGraphLine: function(g, x, y, width, height, line, mouseHandlers){
+      var self = this;
+
+      var graph_lines = [
+        { id: "1"  ,
+          color: self.status == "Normal" ? "rgba(50,205,50, 1.0)" : "rgba(255,0,255, 1.0)",
+          area_color: self.status == "Normal" ? "rgba(50,205,50, 0.1)" : "rgba(255,0,255,0.1)",
+          values: self.graphData
+        },
+      ];
+
       var graph_line = g.selectAll(".graph-line")
         .data(graph_lines)
         .enter().append("g")
+        .attr("fill", "none")
         .attr("class", "graph-line");
 
       graph_line.append("path")

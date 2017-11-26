@@ -65,15 +65,16 @@ module.exports = Vue.component('graph-list',{
     },
  
     selectListItem: function(graph){
-      this.$emit('select-item', graph);
+      graph.isSelected = !graph.isSelected;
+      this.$emit('redraw-all');
     },
 
     enterListItem: function(graph){
-      this.$emit('enter-item', graph);
+      graph.isFocused = true;
     },
 
     leaveListItem: function(graph){
-      this.$emit('leave-item', graph);
+      graph.isFocused = false;
     },
   }
 });

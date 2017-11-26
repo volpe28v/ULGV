@@ -13,9 +13,7 @@
         <div class="left-body">
           <graph-list
              :graphs="graphs"
-             v-on:select-item="selectListItem"
-             v-on:enter-item="enterListItem"
-             v-on:leave-item="leaveListItem"
+             v-on:redraw-all="redrawAll"
           >
           </graph-list>
         </div>

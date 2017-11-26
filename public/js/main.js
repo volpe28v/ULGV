@@ -153,23 +153,6 @@ new Vue({
       this.graphs = numbers.concat(strings);
     },
 
-    selectListItem: function(graph){
-      var self = this;
-      graph.isSelected = !graph.isSelected;
-      self.redrawAll();
-    },
-
-    enterListItem: function(graph){
-      var self = this;
-      graph.isFocused = true;
-    },
-
-    leaveListItem: function(graph){
-      var self = this;
-      graph.isFocused = false;
-    },
-
-
     deleteGraph: function(graphId){
       var self = this;
       self.graphs.filter(function(g) { return g.id == graphId; })[0].isSelected = false;

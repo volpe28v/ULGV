@@ -23,6 +23,7 @@ new Vue({
       graphs: [],
       socket: socket,
       graph_detail: null,
+      detailDataIndex: 0,
     }
   },
 
@@ -166,6 +167,10 @@ new Vue({
       }else{
         self.graph_detail = null;
       }
+    },
+
+    focusDataIndex: function(index){
+      this.detailDataIndex = index;
     },
   }
 });

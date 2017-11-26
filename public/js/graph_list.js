@@ -76,5 +76,6 @@ module.exports = Vue.component('graph-list',{
     leaveListItem: function(graph){
       graph.isFocused = false;
     },
+
   }
 });

@@ -253,14 +253,14 @@ var graphComponent = Vue.component('graph',{
         .attr('r', 4.5)
         .styles({
           fill: 'none',
-          stroke: 'white'
+          stroke: 'cyan'
         });
 
       focus.append('line')
         .classed('x', true)
         .styles({
           fill: 'none',
-          'stroke': 'white',
+          'stroke': 'cyan',
           'stroke-width': '1.0px',
           'stroke-dasharray': '3 3'
         });
@@ -269,7 +269,7 @@ var graphComponent = Vue.component('graph',{
         .classed('y', true)
         .styles({
           fill: 'none',
-          'stroke': 'white',
+          'stroke': 'cyan',
           'stroke-width': '1.0px',
           'stroke-dasharray': '3 3'
         });
@@ -278,7 +278,7 @@ var graphComponent = Vue.component('graph',{
         .attr('x', 9)
         .attr('dy', '.35em')
         .styles({
-          fill: 'white',
+          fill: 'cyan',
         });
 
       return focus;
@@ -306,9 +306,8 @@ var graphComponent = Vue.component('graph',{
             i = data.length - 1;
           }
 
-          var d0 = data[i - 1];
-          var d1 = data[i];
-          var d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+          var disp_i = x0 - data[i-1].date > data[i].date - x0 ? i : i - 1;
+          var d = data[disp_i];
           focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d.value) + ')');
           focus.select('line.x')
             .attr('x1', 0)
@@ -329,6 +328,9 @@ var graphComponent = Vue.component('graph',{
             .text(focus_text)
             .attr('x', xOffset)
             .attr('y', -14);
+
+          //console.log(disp_i);
+          self.$emit('focus-index', disp_i);
         }
       );
     },

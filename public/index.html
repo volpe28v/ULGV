@@ -83,13 +83,15 @@
                  :is-updating="graph_detail.isUpdating"
                  v-on:detail-graph="detailGraph"
                  v-on:delete-graph="deleteGraph"
+                 v-on:focus-index="focusDataIndex"
                  >
           </graph>
         </div>
 
         <div class="detail2">
           <table>
-            <tr v-for="one_data in graph_detail.data">
+            <tr v-for="(one_data, index) in graph_detail.data"
+                v-bind:class="{'focused-detail-data': index == detailDataIndex }">
               <td>{{one_data.m.format("YYYY/MM/DD HH:mm")}}</td>
               <td>{{one_data.v}}</td></tr>
           </table>

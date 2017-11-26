@@ -1,5 +1,6 @@
 // vue vm
 var graph = require("./graph");
+var graphList = require("./graph_list");
 var moment = require("moment");
 moment.locale('ja');
 
@@ -122,14 +123,6 @@ new Vue({
   },
 
   methods: {
-    firstDate: function(graph){
-      return graph.data[0].m.format("YYYY/MM/DD HH:mm");
-    },
-
-    dataCount: function(graph){
-      return graph.data.length;
-    },
-    
     redrawAll: function(){
       var self = this;
       // 状態変更後に遅延描画する
@@ -158,12 +151,6 @@ new Vue({
       });
 
       this.graphs = numbers.concat(strings);
-    },
-
-    getSameGraph: function(list, target){
-      return list.filter(function(g){
-        return g.id == target.id
-      })[0];
     },
 
     selectListItem: function(graph){
@@ -196,22 +183,6 @@ new Vue({
       }else{
         self.graph_detail = null;
       }
-    },
-
-    isSelected: function(graph){
-      return graph.isSelected;
-    },
-
-    isFocused: function(graph){
-      return graph.isFocused;
-    },
-
-    isUpdating: function(graph){
-      return graph.isUpdating;
-    },
-
-    isNormal: function(graph){
-      return graph.status == "Normal";
     },
   }
 });

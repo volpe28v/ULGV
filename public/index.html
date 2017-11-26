@@ -11,26 +11,13 @@
     <div id="app">
       <div class="leftpane">
         <div class="left-body">
-          <ul class="history">
-            <li v-for="graph in graphs"
-                v-bind:class="{
-                  'normal-history': isNormal(graph),
-                  'missing-history': !isNormal(graph),
-                  'selected-history': isSelected(graph),
-                  'focused-history': isFocused(graph), 
-                  'history-update': isUpdating(graph)
-                }"
-                v-on:click="selectListItem(graph)"
-                v-on:mouseenter="enterListItem(graph)"
-                v-on:mouseleave="leaveListItem(graph)"
-                >
-              <div class="history-body">
-                <div>
-                  ID:{{graph.id}} {{firstDate(graph)}} - {{dataCount(graph)}}
-                </div>
-              </div>
-            </li>
-          </ul>
+          <graph-list
+             :graphs="graphs"
+             v-on:select-item="selectListItem"
+             v-on:enter-item="enterListItem"
+             v-on:leave-item="leaveListItem"
+          >
+          </graph-list>
         </div>
       </div>
 

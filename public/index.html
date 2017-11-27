@@ -92,8 +92,8 @@
           <table>
             <tr v-for="(one_data, index) in graph_detail.data"
                 v-bind:class="{'focused-detail-data': index == detailDataIndex }">
-              <td>{{one_data.m.format("YYYY/MM/DD HH:mm")}}</td>
-              <td>{{one_data.v}}</td></tr>
+              <td class="date">{{one_data.m.format("YYYY/MM/DD HH:mm")}}</td>
+              <td class="value">{{one_data.v}}</td></tr>
           </table>
         </div>
       </div>

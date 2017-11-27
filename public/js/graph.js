@@ -178,8 +178,8 @@ var graphComponent = Vue.component('graph',{
 
       var graph_lines = [
         { id: "1"  ,
-          color: self.status == "Normal" ? "rgba(50,205,50, 1.0)" : "rgba(255,0,255, 1.0)",
-          area_color: self.status == "Normal" ? "rgba(50,205,50, 0.1)" : "rgba(255,0,255,0.1)",
+          color: self.status == "Normal" ? "rgba(50,205,50, 1.0)" : "rgba(255,165,0, 1.0)",
+          area_color: self.status == "Normal" ? "rgba(50,205,50, 0.1)" : "rgba(255,165,0,0.1)",
           values: self.graphData
         },
       ];

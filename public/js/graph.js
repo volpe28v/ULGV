@@ -178,8 +178,8 @@ var graphComponent = Vue.component('graph',{
 
       var graph_lines = [
         { id: "1"  ,
-          color: self.status == "Normal" ? "rgba(50,205,50, 1.0)" : "rgba(255,165,0, 1.0)",
-          area_color: self.status == "Normal" ? "rgba(50,205,50, 0.1)" : "rgba(255,165,0,0.1)",
+          line_class: self.status == "Normal" ? "graph-line-normal" : "graph-line-missing",
+          area_class: self.status == "Normal" ? "graph-area-normal" : "graph-area-missing",
           values: self.graphData
         },
       ];
@@ -187,15 +187,10 @@ var graphComponent = Vue.component('graph',{
       var graph_line = g.selectAll(".graph-line")
         .data(graph_lines)
         .enter().append("g")
-        .attr("fill", "none")
         .attr("class", "graph-line");
 
       graph_line.append("path")
-        .attr("fill", "none")
-        .attr("stroke", function(d){ return d.color;})
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-width", 2.5)
+        .attr("class", function(d){ return d.line_class;})
         .attr("d", function(d){ return line(d.values);});
 
       // 塗りつぶし
@@ -205,7 +200,7 @@ var graphComponent = Vue.component('graph',{
         .y1(function(d) { return y(d.value); });
 
       graph_line.append("path")
-        .attr("fill", function(d){ return d.area_color;})
+        .attr("class", function(d){ return d.area_class;})
         .attr("d", function(d){ return area(d.values);});
 
       // カーソル

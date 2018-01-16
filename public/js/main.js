@@ -118,6 +118,11 @@ new Vue({
       }
     });
 
+    self.socket.on("clear_data", function(graph){
+        self.graphs = [];
+        self.graph_detail = null;
+    });
+
     window.addEventListener('resize', function (event) {
       self.redrawAll();
     });

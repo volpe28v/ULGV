@@ -30,6 +30,15 @@ app.post('/graph', function(req, res){
   res.json({});
 });
 
+app.get('/clear', function(req, res){
+  console.log("/clear");
+
+  index_socket.clearAll();
+
+  res.json({result: "ok"});
+});
+
+
 server.listen(app.get('port'), function () {
   console.log('ULGV listening on port ' + app.get('port'));
 });
